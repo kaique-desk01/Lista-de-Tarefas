@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarefas</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 900px;
+            margin: 48px auto;
+            padding: 24px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            background: #111827;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        th, td {
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background: #f9fafb;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            background: #e5e7eb;
+        }
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Minhas tarefas</h1>
+            <a href="{% url 'tasks:tasks-add_task' %}" class="btn">+ Nova tarefa</a>
+            <a href="{% url 'tasks:tasks-delete_all' %}" class="btn">Limpar</a>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tarefa</th>
+                    <th>Descrição</th>
+                    <th>Status</th>
+                    <th>Criação</th>
+                    <th>Ação</th>
+                    <th>Excluir</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in tasks %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.description }}</td>
+                        <td><span class="status">{% if item.completed %}Concluída{% else %}Pendente{% endif %}</span></td>
+                        <td>{{ item.created_at|date:"d/m/Y" }}</td>
+                        <td>
+                            <form method="post" action="{% url 'tasks:tasks-concluir' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit">
+                                    {% if item.completed %}Reabrir{% else %}Concluir{% endif %}
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post" action="{% url 'tasks:tasks-delete' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty">Nenhuma tarefa cadastrada.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
