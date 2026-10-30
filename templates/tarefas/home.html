@@ -57,6 +57,17 @@
             letter-spacing: 0.05em;
             color: #6b7280;
         }
+        .box-messages {
+            position: fixed;
+            right: 7px;
+            bottom: 5px;
+            text-align: center;
+            padding: 7px;
+            margin: 8px;
+            background: #f9fafb;
+            box-shadow: 4px 4px 10px rgb(136, 136, 136);
+            border-radius: 5px;
+        }
         .status {
             display: inline-block;
             padding: 5px 10px;
@@ -119,6 +130,34 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="box-messages">
+            <div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="django-message alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            const messages = document.querySelectorAll('.django-message');
+            messages.forEach(function (message) {
+                setTimeout(function() {
+                    message.style.transition = "opacity 0.5s ease";
+                    message.style.opacity = "0";
+
+                        setTimeout(function()  {
+                            message.remove();
+                        }, 500);
+                    
+                }, 3000);
+                
+            })
+        })
+    </script>
 </body>
 </html>
