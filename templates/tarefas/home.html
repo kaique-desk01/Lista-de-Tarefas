@@ -86,6 +86,7 @@
     <div class="container">
         <div class="header">
             <h1>Minhas tarefas</h1>
+            <a href="{% url 'tasks:tasks-search_task' %}" class="btn">Pesquisar</a>
             <a href="{% url 'tasks:tasks-add_task' %}" class="btn">+ Nova tarefa</a>
             <a href="{% url 'tasks:tasks-delete_all' %}" class="btn">Limpar</a>
         </div>

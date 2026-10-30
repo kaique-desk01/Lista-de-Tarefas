@@ -3,6 +3,8 @@ from django.views.decorators.http import require_POST
 from .models import Task
 from .forms import TaskForm
 from django.contrib import messages
+from django.db.models import Q
+
 
 # Create your views here.
 def home(request):
@@ -40,3 +42,17 @@ def delete_all_tasks(request):
     Task.objects.all().delete()
     messages.success(request, "Tasks deletadas com sucesso!!")
     return redirect('tasks:tasks-home')
+
+def search_task(request):
+    termo = request.GET.get("q", "").strip()
+    resultados = Task.objects.none()
+
+    if termo:
+        resultados = Task.objects.filter(
+            Q(title__icontains=termo) |
+            Q(description__icontains=termo)
+        )
+    return render(request, "tarefas/search_task.html", {
+        "resultados": resultados,
+        "termo": termo,
+    })
